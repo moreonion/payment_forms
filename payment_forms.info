@@ -1,0 +1,7 @@
+name = Payment Form
+description = Form handling for payment methods
+core = 7.x
+project = payment_forms
+
+dependencies[] = psr0
+
