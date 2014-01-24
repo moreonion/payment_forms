@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ *
+ * @author    Paul Haerle <phaer@phaer.org>
+ * @copyright Copyright (c) 2013 copyright
+ */
 
 namespace Drupal\payment_forms;
 
@@ -7,9 +13,14 @@ namespace Drupal\payment_forms;
  */
 class CreditCardForm implements Interfaces\PaymentForm {
   static protected $issuers = array(
-      'visa' => 'Visa',
-      'mastercard' => 'MasterCard',
-      'amex' => 'American Express',
+    'visa' => 'Visa',
+    'mastercard' => 'MasterCard',
+    'amex' => 'American Express',
+  );
+  static protected $cvc_label = array(
+    'visa' => 'CVV2 (Card Verification Value 2)',
+    'amex' => 'CID (Card Identification Number)',
+    'mastercard' => 'CVC2 (Card Validation Code 2)',
   );
 
   public function getForm(array &$form, array &$form_state) {
@@ -48,74 +59,74 @@ class CreditCardForm implements Interfaces\PaymentForm {
     return $form;
   }
 
-  public function validateForm(array &$element, array &$form_state) {
-  $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+  /**
+   * Mockable wrapper around form_error().
+   */
+  protected function formError(array &$element, $error) {
+    form_error($element, $error);
+  }
 
-  # validate presence of all fields:
-  #   issuer, credit_card_number, secure_code, expiry_date
-  foreach($values as $key => $value) {
-    if(empty($value)) {
-      form_error($element[$key], t('@name is required', array('@name' => $element[$key]['#title'])));
+  /**
+   * Validate and data and set form errors accordingly.
+   */
+  public function validateValues(array &$element, array &$data) {
+    $data['credit_card_number'] = preg_replace('/\s+/', '', $data['credit_card_number']);
+
+    require_once(dirname(__FILE__) . '/../creditcard_validation.inc.php');
+    $credit_card_validator = new \CreditCardValidator();
+
+    $validation_result = $credit_card_validator->isValidCreditCard($data['credit_card_number'], '', TRUE);
+    if (!$validation_result->valid) {
+      $this->formError($element['credit_card_number'], t('%card is not a valid credit card number.', array('%card' => $data['credit_card_number'])));
+    }
+    elseif ($validation_result->issuer != $data['issuer']) {
+      $this->formError($element['credit_card_number'], t(
+        'Credit card number %card doesn\'t appear to be from issuer %issuer.',
+        array(
+          '%card'   => $data['credit_card_number'],
+          '%issuer' => self::$issuers[$data['issuer']],
+        )
+      ));
     }
 
-    $form_state['payment']->method_data[$key] = $value;
-  }
-
-  require_once(dirname(__FILE__) . '/../creditcard_validation.inc.php');
-
-  $credit_card_validator = new \CreditCardValidator();
-
-  $issuer             = $form_state['payment']->method_data['issuer'];
-  $credit_card_number = $form_state['payment']->method_data['credit_card_number'];
-  $credit_card_number = preg_replace('/\s+/', '', $credit_card_number);
-  $secure_code        = $form_state['payment']->method_data['secure_code'];
-  $expiry_date        = $form_state['payment']->method_data['expiry_date'];
-
-  # validate creditcard number
-  $validation_result = $credit_card_validator->isValidCreditCard($credit_card_number, '', TRUE);
-  if ($validation_result->valid == FALSE) {
-    form_error($element['credit_card_number'], t('%card is not a valid credit card number.', array('%card' => $credit_card_number)));
-  }
-  elseif ($validation_result->issuer != $issuer) {
-    form_error($element['credit_card_number'], t(
-      'Credit card number %card doesn\'t appear to be from issuer %issuer.',
-      array(
-        '%card'   => $credit_card_number,
-        '%issuer' => $element['issuer']['#options'][$issuer_index],
-      )
-    ));
-  }
-
-  # validate secure code (CVC)
-  if ($credit_card_validator->isValidCardValidationCode($secure_code, $issuer) == FALSE) {
-    switch ($issuer) {
-    case 'visa':
-      $cvc_labeling = 'CVV2 (Card Verification Value 2)';
-      break;
-
-    case 'amex':
-      $cvc_labeling = 'CID (Card Identification Number)';
-      break;
-
-    default:
-      $cvc_labeling = 'CVC2 (Card Validation Code 2)';
+    // Validate secure code (CVC).
+    if (!$credit_card_validator->isValidCardValidationCode($data['secure_code'], $data['issuer'])) {
+      $msg = t('The %secure_code_label %code is not valid.', array(
+        '%card' => $data['secure_code'],
+        '%secure_code_label' => self::$cvc_label[$data['issuer']],
+      ));
+      $this->formError($element['secure_code'], $msg);
     }
-    form_error($element['secure_code'], t('The ' . $cvc_labeling . ' %card is not valid.', array('%card' => $secure_code)));
-  }
 
-  # validate expiry date
-  if (($date_object = $credit_card_validator->isValidToDate($expiry_date)) == FALSE) {
-    form_error($element['expiry_date'], t('The entered expiration date is wrong or the card is expired.'));
-  } else {
-    # only these two formats could have passed validation
-    # save a date object for further use in request to mPay24 API
-    if(strlen($expiry_date) == 4) {
-      $form_state['payment']->method_data['expiry_date'] = date_create_from_format("my", $expiry_date);
-    } elseif (strlen($expiry_date) == 5) {
-      $form_state['payment']->method_data['expiry_date'] = date_create_from_format("m/y", $expiry_date);
+    // Validate expiry date.
+    if ($data['expiry_date'] = $this->parseDate($data['expiry_date'])) {
+      if ($data['expiry_date']->getTimestamp() < time()) {
+        $this->formError($element['expiry_date'], t('The credit card has expired.'));
+      }
     } else {
-      form_error($element['expiry_date'], t('Please enter a valid expiration date'));
+      $this->formError($element['expiry_date'], t('Please enter a valid expiration date'));
     }
   }
+
+  public function parseDate($date) {
+    $dateObj = FALSE;
+    $valid4 = strlen($date) == 4 && $dateObj = date_create_from_format("my", $date);
+    $valid5 = strlen($date) == 5 && $dateObj = date_create_from_format("m/y", $date);
+    if ($valid4 || $valid5) {
+      $dateObj->setTime(0,0,0);
+      $dateObj->modify('first day of this month');
+    }
+    return $dateObj;
+  }
+
+  public function validateForm(array &$element, array &$form_state) {
+    $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
+
+    $this->vaidateValues($element, $values);
+
+    // Merge in validated fields.
+    foreach(array('issuer', 'credit_card_number', 'secure_code', 'expiry_date') as $key) {
+      $form_state['payment']->method_data[$key] = $values[$key];
+    }
   }
 }
