@@ -110,10 +110,10 @@ class CreditCardForm implements Interfaces\PaymentForm {
     # save a date object for further use in request to mPay24 API
     if(strlen($expiry_date) == 4) {
       $form_state['payment']->method_data['expiry_date'] = date_create_from_format("my", $expiry_date);
-    } elseif (strlen($expiry_date == 5)) {
+    } elseif (strlen($expiry_date) == 5) {
       $form_state['payment']->method_data['expiry_date'] = date_create_from_format("m/y", $expiry_date);
     } else {
-      $form_state['payment']->method_data['expiry_date'] = date_create();
+      form_error($element['expiry_date'], t('Please enter a valid expiration date'));
     }
   }
   }
