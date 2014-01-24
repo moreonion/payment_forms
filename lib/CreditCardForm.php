@@ -67,6 +67,7 @@ class CreditCardForm implements Interfaces\PaymentForm {
 
   $issuer             = $form_state['payment']->method_data['issuer'];
   $credit_card_number = $form_state['payment']->method_data['credit_card_number'];
+  $credit_card_number = preg_replace('/\s+/', '', $credit_card_number);
   $secure_code        = $form_state['payment']->method_data['secure_code'];
   $expiry_date        = $form_state['payment']->method_data['expiry_date'];
 
