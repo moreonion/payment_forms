@@ -119,8 +119,9 @@ class AccountForm implements Interfaces\PaymentForm {
       }
 
     } else {
-      $method_data['iban'] = $values['ibanbic']['iban'];
-      $method_data['bic']  = $values['ibanbic']['bic'];
+      $method_data['iban']    = $values['ibanbic']['iban'];
+      $method_data['bic']     = $values['ibanbic']['bic'];
+      $method_data['country'] = substr($values['ibanbic']['iban'], 0, 2);
 
       require_once(dirname(__FILE__) . '/../php-iban.php');
       if (verify_iban($values['ibanbic']['iban']) == FALSE) {
