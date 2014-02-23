@@ -8,7 +8,10 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
       'issuer' => 'visa',
       'credit_card_number' => '4444333322221111',
       'secure_code' => '804',
-      'expiry_date' => '06/16'
+      'expiry_date' => array(
+        'month' => '06',
+        'year' => '2016',
+      ),
     )
   );
 
@@ -39,7 +42,8 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
     $form->expects($this->never())->method('formError');
     $data = self::$cards['visa_valid'];
     $data['credit_card_number'] = '4444 3333 2222 1111';
-    $form->validateValues($this->elements(), $data);
+    $elements = $this->elements();
+    $form->validateValues($elements, $data);
     $this->assertEqual('4444333322221111', $data['credit_card_number']);
   }
 
@@ -48,7 +52,8 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
     $form->expects($this->once())->method('formError');
     $data = self::$cards['visa_valid'];
     $data['credit_card_number'] = '55553333222211X1';
-    $form->validateValues($this->elements(), $data);
+    $elements = $this->elements();
+    $form->validateValues($elements, $data);
   }
 
   function testValidation_invalidSecureCode_formError() {
@@ -56,33 +61,19 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
     $form->expects($this->once())->method('formError');
     $data = self::$cards['visa_valid'];
     $data['secure_code'] = 'XYZ';
-    $form->validateValues($this->elements(), $data);
+    $elements = $this->elements();
+    $form->validateValues($elements, $data);
   }
 
-  function testValidation_weirdDate_accepted() {
-    $form = $this->getValidateMock();
-    $form->expects($this->never())->method('formError');
-    $data = self::$cards['visa_valid'];
-    $data['expiry_date'] = '14/25';
-    $form->validateValues($this->elements(), $data);
-    $this->assertEqual('2026-02', $data['expiry_date']->format('Y-m'));
-  }
-
-  function testValidation_invalidExpiry_formError() {
+  function testValidation_expiredCard_formError() {
     $form = $this->getValidateMock();
     $form->expects($this->once())->method('formError');
     $data = self::$cards['visa_valid'];
-    $data['expiry_date'] = '1/2/3';
-    $form->validateValues($this->elements(), $data);
-  }
-
-  function testValidation_emptyFields_formError() {
-    $form = $this->getValidateMock();
-    $form->expects($this->exactly(3))->method('formError');
-    $data = self::$cards['visa_valid'];
-    $data['credit_card_number'] = '';
-    $data['secure_code'] = '';
-    $data['expiry_date'] = '';
-    $form->validateValues($this->elements(), $data);
+    $data['expiry_date'] = array(
+      'month' => '01',
+      'year' => date('Y') - 1,
+    );
+    $elements = $this->elements();
+    $form->validateValues($elements, $data);
   }
 }
