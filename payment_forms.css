@@ -1,0 +1,8 @@
+
+.expiry-date .form-item {
+  float: left;
+}
+
+.expiry-date .form-item+.form-item {
+  padding-left: 1em;
+}

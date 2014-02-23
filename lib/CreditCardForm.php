@@ -53,6 +53,7 @@ class CreditCardForm implements Interfaces\PaymentForm {
       '#title'  => t('Expiry date'),
       '#weight' => 3,
       '#tree'   => TRUE,
+      '#attributes' => array('class' => array('expiry-date')),
     );
 
     $months = array();
@@ -72,7 +73,6 @@ class CreditCardForm implements Interfaces\PaymentForm {
       '#title' => t('Year'),
       '#options' => array_combine(range($year, $year+8), range($year, $year+8)),
     );
-
     return $form;
   }
 

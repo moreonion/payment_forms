@@ -5,3 +5,5 @@ project = payment_forms
 
 dependencies[] = psr0
 
+stylesheets[all][] = payment_forms.css
+
