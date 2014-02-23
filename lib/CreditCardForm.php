@@ -49,11 +49,28 @@ class CreditCardForm implements Interfaces\PaymentForm {
     );
 
     $form['expiry_date'] = array(
-      '#type'      => 'textfield',
-      '#title'     => t('Expiry date'),
-      '#weight'    => 3,
-      '#size'      => 5,
-      '#maxlength' => 5,
+      '#type'   => 'fieldset',
+      '#title'  => t('Expiry date'),
+      '#weight' => 3,
+      '#tree'   => TRUE,
+    );
+
+    $months = array();
+    foreach (range(1, 12) as $month) {
+      $month = str_pad($month, 2, '0', STR_PAD_LEFT);
+      $months[$month] = $month;
+    }
+    $year = (int) date('Y');
+    $form['expiry_date']['month'] = array(
+      '#type' => 'select',
+      '#title' => t('Month'),
+      '#options' => $months,
+      '#attributes' => array('class' => array('expiry-date')),
+    );
+    $form['expiry_date']['year'] = array(
+      '#type' => 'select',
+      '#title' => t('Year'),
+      '#options' => array_combine(range($year, $year+8), range($year, $year+8)),
     );
 
     return $form;
@@ -109,13 +126,7 @@ class CreditCardForm implements Interfaces\PaymentForm {
   }
 
   public function parseDate($date) {
-    $dateObj = FALSE;
-    $valid4 = strlen($date) == 4 && $dateObj = date_create_from_format("my", $date);
-    $valid5 = strlen($date) == 5 && $dateObj = date_create_from_format("m/y", $date);
-    if ($valid4 || $valid5) {
-      $dateObj->setTime(0,0,0);
-      $dateObj->modify('first day of this month');
-    }
+    $dateObj = new \DateTime($date['month'] . '/01/' . $date['year']);
     return $dateObj;
   }
 
