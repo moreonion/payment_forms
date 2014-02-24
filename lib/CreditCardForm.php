@@ -133,7 +133,7 @@ class CreditCardForm implements Interfaces\PaymentForm {
   public function validateForm(array &$element, array &$form_state) {
     $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
-    $this->vaidateValues($element, $values);
+    $this->validateValues($element, $values);
 
     // Merge in validated fields.
     foreach(array('issuer', 'credit_card_number', 'secure_code', 'expiry_date') as $key) {
