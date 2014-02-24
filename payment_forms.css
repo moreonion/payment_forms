@@ -1,6 +1,7 @@
 
 .expiry-date .form-item {
   float: left;
+  width: 45%;
 }
 
 .expiry-date .form-item+.form-item {
