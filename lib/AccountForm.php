@@ -19,8 +19,8 @@ class AccountForm implements Interfaces\PaymentForm {
     $form['account_or_ibanbic'] = array(
       '#type' => 'radios',
       '#options' => array(
-        'ibanbic' => 'IBAN & BIC',
-        'account' => 'Account number & bank code',
+        'ibanbic' => t('IBAN & BIC'),
+        'account' => t('Account number & bank code'),
       ),
       '#default_value' => 'ibanbic',
       '#id' => $id,
