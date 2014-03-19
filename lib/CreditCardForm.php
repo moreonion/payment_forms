@@ -26,7 +26,7 @@ class CreditCardForm implements Interfaces\PaymentForm {
   public function getForm(array &$form, array &$form_state) {
     $form['issuer'] = array(
       '#type'		    => 'select',
-      '#options'   	=> self::$issuers,
+      '#options'   	=> static::$issuers,
       '#empty_value'	=> '',
       '#title'		=> t('Issuer'),
       '#weight'		=> 0,
