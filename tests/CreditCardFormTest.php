@@ -32,7 +32,8 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
     $form = $this->getValidateMock();
     $form->expects($this->never())->method('formError');
     $data = self::$cards['visa_valid'];
-    $form->validateValues($this->elements(), $data);
+    $elements = $this->elements();
+    $form->validateValues($elements, $data);
     $this->assertInstanceOf('DateTime', $data['expiry_date']);
     $this->assertEqual('2016-06', $data['expiry_date']->format('Y-m'));
   }
@@ -72,6 +73,18 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
     $data['expiry_date'] = array(
       'month' => '01',
       'year' => date('Y') - 1,
+    );
+    $elements = $this->elements();
+    $form->validateValues($elements, $data);
+  }
+
+  function testValidation_invalidDate_formError() {
+    $form = $this->getValidateMock();
+    $form->expects($this->once())->method('formError');
+    $data = self::$cards['visa_valid'];
+    $data['expiry_date'] = array(
+      'month' => '01',
+      'year' => '',
     );
     $elements = $this->elements();
     $form->validateValues($elements, $data);

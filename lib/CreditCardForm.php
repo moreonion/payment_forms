@@ -126,8 +126,14 @@ class CreditCardForm implements Interfaces\PaymentForm {
   }
 
   public function parseDate($date) {
-    $dateObj = new \DateTime($date['month'] . '/01/' . $date['year']);
-    return $dateObj;
+    try {
+      $dateObj = new \DateTime($date['month'] . '/01/' . $date['year']);
+      return $dateObj;
+    }
+    catch (\Exception $e) {
+      // Parsing failed that's fine we return FALSE in that case.
+      return FALSE;
+    }
   }
 
   public function validateForm(array &$element, array &$form_state) {
