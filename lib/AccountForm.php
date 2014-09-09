@@ -51,16 +51,16 @@ class AccountForm implements Interfaces\PaymentForm {
       form_error($element['holder'], t('Please enter the name of the account holder.'));
     }
 
-    $method_data['iban']    = $values['ibanbic']['iban'];
-    $method_data['bic']     = $values['ibanbic']['bic'];
-    $method_data['country'] = substr($values['ibanbic']['iban'], 0, 2);
+    $method_data['iban']    = trim($values['ibanbic']['iban']);
+    $method_data['bic']     = trim($values['ibanbic']['bic']);
+    $method_data['country'] = substr($method_data['iban'], 0, 2);
 
     require_once(dirname(__FILE__) . '/../php-iban.php');
-    if (verify_iban($values['ibanbic']['iban']) == FALSE) {
+    if (verify_iban($method_data['ibanbic']['iban']) == FALSE) {
       form_error($element['ibanbic']['iban'], t('Please enter a valid IBAN.'));
     }
 
-    if (preg_match('/^[a-z]{6}[2-9a-z][0-9a-np-z](|xxx|[0-9a-wyz][0-9a-z]{2})$/i', $values['ibanbic']['bic']) != 1) {
+    if (preg_match('/^[a-z]{6}[2-9a-z][0-9a-np-z](|xxx|[0-9a-wyz][0-9a-z]{2})$/i', $method_data['ibanbic']['bic']) != 1) {
       form_error($element['ibanbic']['bic'], t('Please enter a valid BIC.'));
     }
   }
