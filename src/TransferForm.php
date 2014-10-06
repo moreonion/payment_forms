@@ -5,7 +5,7 @@ namespace Drupal\payment_forms;
 /**
  *
  */
-class TransferForm implements Interfaces\PaymentForm {
+class TransferForm implements FormInterface {
 
   public function getForm(array &$form, array &$form_state) {
     $form['send_transfer_form'] = array(

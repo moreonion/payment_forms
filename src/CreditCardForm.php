@@ -1,17 +1,10 @@
 <?php
-/**
- * @file
- *
- * @author    Paul Haerle <phaer@phaer.org>
- * @copyright Copyright (c) 2013 copyright
- */
-
 namespace Drupal\payment_forms;
 
 /**
  *
  */
-class CreditCardForm implements Interfaces\PaymentForm {
+class CreditCardForm implements FormInterface {
   static protected $issuers = array(
     'visa' => 'Visa',
     'mastercard' => 'MasterCard',

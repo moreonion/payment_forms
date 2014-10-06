@@ -5,7 +5,7 @@ namespace Drupal\payment_forms;
 /**
  *
  */
-class OnlineBankingForm implements Interfaces\PaymentForm {
+class OnlineBankingForm implements FormInterface {
 
   public function getForm(array &$form, array &$form_state) {
     $form['redirection_info'] = array(

@@ -1,10 +1,10 @@
 <?php
-namespace Drupal\payment_forms\Interfaces;
+namespace Drupal\payment_forms;
 
 /**
  * Interface that all payment forms provide to PaymentContexts using them.
  */
-interface PaymentForm {
-  public function getForm(array &$element, array &$form_state);
+interface FormInterface {
+  public function getForm(array &$element, array &$form_state, PaymentContextInterface $context);
   public function validateForm(array &$element, array &$form_state);
 }

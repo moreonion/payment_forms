@@ -4,7 +4,7 @@ namespace Drupal\payment_forms;
 /**
  *
  */
-class AccountForm implements Interfaces\PaymentForm {
+class AccountForm implements FormInterface {
   static protected $id = 0;
 
   public function getForm(array &$form, array &$form_state) {

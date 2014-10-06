@@ -5,14 +5,14 @@
  *
  * this callback has to be set in the payment method definition;
  */
-function payment_forms_method_form(array $element, array &$form_state) {
+function payment_forms_method_form(array $element, array &$form_state, $context = NULL) {
   $payment = $form_state['payment'];
 
   if (empty($payment->method->controller->form)) {
     throw new Exception(t("Payment Method @name has no form set.",
         array('@name' => $payment->method->title_specific)));
   } else {
-    return $payment->method->controller->form->getForm($element, $form_state);
+    return $payment->method->controller->form->getForm($element, $form_state, $context);
   }
 }
 
