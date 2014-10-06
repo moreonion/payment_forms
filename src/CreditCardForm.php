@@ -1,6 +1,8 @@
 <?php
 namespace Drupal\payment_forms;
 
+use \Drupal\payment_forms\PaymentContextInterface;
+
 /**
  *
  */
@@ -16,7 +18,7 @@ class CreditCardForm implements FormInterface {
     'mastercard' => 'CVC2 (Card Validation Code 2)',
   );
 
-  public function getForm(array &$form, array &$form_state) {
+  public function getForm(array &$form, array &$form_state, PaymentContextInterface $context) {
     $form['issuer'] = array(
       '#type'		    => 'select',
       '#options'   	=> static::$issuers,

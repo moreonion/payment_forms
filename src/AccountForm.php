@@ -1,13 +1,15 @@
 <?php
 namespace Drupal\payment_forms;
 
+use \Drupal\payment_forms\PaymentContextInterface;
+
 /**
  *
  */
 class AccountForm implements FormInterface {
   static protected $id = 0;
 
-  public function getForm(array &$form, array &$form_state) {
+  public function getForm(array &$form, array &$form_state, PaymentContextInterface $context) {
     $form['holder'] = array(
       '#type'  => 'textfield',
       '#title' => t('Account holder'),

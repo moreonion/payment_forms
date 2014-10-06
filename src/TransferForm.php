@@ -2,12 +2,13 @@
 
 namespace Drupal\payment_forms;
 
+use \Drupal\payment_forms\PaymentContextInterface;
 /**
  *
  */
 class TransferForm implements FormInterface {
 
-  public function getForm(array &$form, array &$form_state) {
+  public function getForm(array &$form, array &$form_state, PaymentContextInterface $context) {
     $form['send_transfer_form'] = array(
       '#type'     => 'markup',
       '#markup'    => t('The transfer form will be sent to the address you provided earlier.'),
