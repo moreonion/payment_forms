@@ -1,8 +1,6 @@
 <?php
 namespace Drupal\payment_forms;
 
-use \Drupal\payment_forms\PaymentContextInterface;
-
 /**
  *
  */
@@ -18,7 +16,7 @@ class CreditCardForm implements FormInterface {
     'mastercard' => 'CVC2 (Card Validation Code 2)',
   );
 
-  public function getForm(array &$form, array &$form_state, PaymentContextInterface $context) {
+  public function getForm(array &$form, array &$form_state, \Payment $payment) {
     $form['issuer'] = array(
       '#type'		    => 'select',
       '#options'   	=> static::$issuers,
@@ -131,14 +129,14 @@ class CreditCardForm implements FormInterface {
     }
   }
 
-  public function validateForm(array &$element, array &$form_state) {
+  public function validateForm(array &$element, array &$form_state, \Payment $payment) {
     $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
     $this->validateValues($element, $values);
 
     // Merge in validated fields.
     foreach(array('issuer', 'credit_card_number', 'secure_code', 'expiry_date') as $key) {
-      $form_state['payment']->method_data[$key] = $values[$key];
+      $payment->method_data[$key] = $values[$key];
     }
   }
 }

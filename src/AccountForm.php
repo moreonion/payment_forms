@@ -1,15 +1,13 @@
 <?php
 namespace Drupal\payment_forms;
 
-use \Drupal\payment_forms\PaymentContextInterface;
-
 /**
  *
  */
 class AccountForm implements FormInterface {
   static protected $id = 0;
 
-  public function getForm(array &$form, array &$form_state, PaymentContextInterface $context) {
+  public function getForm(array &$form, array &$form_state, \Payment $payment) {
     $form['holder'] = array(
       '#type'  => 'textfield',
       '#title' => t('Account holder'),
@@ -42,10 +40,10 @@ class AccountForm implements FormInterface {
     return $form;
   }
 
-  public function validateForm(array &$element, array &$form_state) {
+  public function validateForm(array &$element, array &$form_state, \Payment $payment) {
 
     $values = &drupal_array_get_nested_value($form_state['values'], $element['#parents']);
-    $method_data = &$form_state['payment']->method_data;
+    $method_data = &$payment->method_data;
 
     $method_data['holder'] = $values['holder'];
 
