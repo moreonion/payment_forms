@@ -10,7 +10,8 @@ function payment_forms_method_form(array &$element, array &$form_state, \Payment
     throw new Exception(t("Payment Method @name has no form set.",
         array('@name' => $payment->method->title_specific)));
   } else {
-    return $payment->method->controller->form->getForm($element, $form_state, $payment);
+    $payment->method->controller->form->getForm($element, $form_state, $payment);
+    return $element;
   }
 }
 
