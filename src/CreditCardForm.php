@@ -64,6 +64,7 @@ class CreditCardForm implements FormInterface {
     $form['expiry_date']['year'] = array(
       '#type' => 'select',
       '#title' => t('Year'),
+      '#default_value' => $year+1,
       '#options' => array_combine(range($year, $year+8), range($year, $year+8)),
     );
     return $form;
