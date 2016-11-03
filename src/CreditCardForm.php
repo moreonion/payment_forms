@@ -4,7 +4,8 @@ namespace Drupal\payment_forms;
 /**
  *
  */
-class CreditCardForm implements FormInterface {
+class CreditCardForm implements PaymentFormInterface {
+
   static protected $issuers = array(
     'visa' => 'Visa',
     'mastercard' => 'MasterCard',
@@ -16,7 +17,7 @@ class CreditCardForm implements FormInterface {
     'mastercard' => 'CVC2 (Card Validation Code 2)',
   );
 
-  public function getForm(array &$form, array &$form_state, \Payment $payment) {
+  public function form(array &$form, array &$form_state, \Payment $payment) {
     $form['issuer'] = array(
       '#type'		    => 'select',
       '#options'   	=> static::$issuers,
@@ -130,7 +131,7 @@ class CreditCardForm implements FormInterface {
     }
   }
 
-  public function validateForm(array &$element, array &$form_state, \Payment $payment) {
+  public function validate(array &$element, array &$form_state, \Payment $payment) {
     $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
     $this->validateValues($element, $values);

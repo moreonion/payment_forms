@@ -1,19 +1,18 @@
 <?php
 
 /**
- * Form callback for webform_component_paymethod_select.
+ * Form callback for payment forms.
  *
- * This callback has to be set in the payment method definition.
+ * This callback has to be set in the payment controller class. This function
+ * assumes that a PaymentMethodController using this callback implements the
+ * paymentForm() method according to @see FormCallbacksMixin.
  */
-function payment_forms_method_form(array &$element, array &$form_state) {
+function payment_forms_payment_form(array &$element, array &$form_state) {
   $payment = $form_state['payment'];
-  if (empty($payment->method->controller->form)) {
-    throw new Exception(t("Payment Method @name has no form set.",
-        array('@name' => $payment->method->title_specific)));
-  } else {
-    $payment->method->controller->form->getForm($element, $form_state, $payment);
-    return $element;
-  }
+  $form = $payment->method->controller->paymentForm($payment);
+  $element = $form->form($element, $form_state, $payment);
+  $element['#form'] = $form;
+  return $element;
 }
 
 /**
@@ -22,8 +21,35 @@ function payment_forms_method_form(array &$element, array &$form_state) {
  * The function name is automatically derived from the
  * form callback name.
  */
-function payment_forms_method_form_validate(&$element, &$form_state) {
+function payment_forms_payment_form_validate(&$element, &$form_state) {
   $payment = $form_state['payment'];
-  $payment_form = &$payment->method->controller->form;
-  $payment_form->validateForm($element, $form_state, $payment);
+  $form = $element['#form'];
+  $form->validate($element, $form_state, $payment);
+}
+
+/**
+ * Form element callback: Payment method configuration.
+ *
+ * The callback to this function has to be set in the payment controller class.
+ * This function assumes that a the PaymentMethodController class implements the
+ * configurationForm() method according to @see FormCallbacksMixin.
+ */
+function payment_forms_method_configuration_form($element, &$form_state) {
+  $method = $form_state['payment_method'];
+  $method->controller_data = drupal_array_merge_deep($method->controller->controller_data_defaults, $method->controller_data);
+  $form = $method->controller->configurationForm($method);
+  $element = $form->form($element, $form_state, $method);
+  $element['#form'] = $form;
+  return $element;
+}
+
+/**
+ * Form validate callback for the payment_method configuration.
+ *
+ * @see payment_forms_method_configuration_form().
+ */
+function payment_forms_method_configuration_form_validate($element, &$form_state) {
+  $method = $form_state['payment_method'];
+  $form = $element['#form'];
+  $form->validate($element, $form_state, $method);
 }

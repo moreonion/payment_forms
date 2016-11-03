@@ -5,9 +5,9 @@ namespace Drupal\payment_forms;
 /**
  *
  */
-class TransferForm implements FormInterface {
+class TransferForm implements PaymentFormInterface {
 
-  public function getForm(array &$form, array &$form_state, \Payment $payment) {
+  public function form(array &$form, array &$form_state, \Payment $payment) {
     $form['send_transfer_form'] = array(
       '#type'     => 'markup',
       '#markup'    => t('The transfer form will be sent to the address you provided earlier.'),
@@ -16,7 +16,7 @@ class TransferForm implements FormInterface {
     return $form;
   }
 
-  public function validateForm(array &$element, array &$form_state, \Payment $payment) {
+  public function validate(array &$element, array &$form_state, \Payment $payment) {
     $values = drupal_array_get_nested_value($form_state['values'], $element['#parents']);
 
     if (!empty($values['send_transfer_form'])) {
