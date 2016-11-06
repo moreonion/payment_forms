@@ -63,4 +63,5 @@ class AccountForm implements PaymentFormInterface {
       form_error($element['ibanbic']['bic'], t('Please enter a valid BIC.'));
     }
   }
+
 }

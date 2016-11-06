@@ -9,9 +9,9 @@ class OnlineBankingForm implements PaymentFormInterface {
 
   public function form(array &$form, array &$form_state, \Payment $payment) {
     $form['redirection_info'] = array(
-      '#type'	=> 'markup',
-      '#markup'  => t('After submitting this form you will be redirected to our external payment partner to finish the transaction.'),
-      '#weight'	=> 0,
+      '#type' => 'markup',
+      '#markup' => t('After submitting this form you will be redirected to our external payment partner to finish the transaction.'),
+      '#weight' => 0,
     );
 
     return $form;
@@ -21,4 +21,5 @@ class OnlineBankingForm implements PaymentFormInterface {
     // safe reference to form_state, needed for later execute()
     $payment->form_state = &$form_state;
   }
+
 }

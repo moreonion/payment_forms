@@ -19,34 +19,34 @@ class CreditCardForm implements PaymentFormInterface {
 
   public function form(array &$form, array &$form_state, \Payment $payment) {
     $form['issuer'] = array(
-      '#type'		    => 'select',
-      '#options'   	=> static::$issuers,
-      '#empty_value'	=> '',
-      '#title'		=> t('Issuer'),
-      '#weight'		=> 0,
+      '#type' => 'select',
+      '#options' => static::$issuers,
+      '#empty_value' => '',
+      '#title' => t('Issuer'),
+      '#weight' => 0,
     );
 
     $form['credit_card_number'] = array(
-      '#type'      => 'textfield',
-      '#title'     => t('Credit card number '),
-      '#weight'    => 1,
-      '#size'      => 32,
+      '#type' => 'textfield',
+      '#title' => t('Credit card number '),
+      '#weight' => 1,
+      '#size' => 32,
       '#maxlength' => 32,
     );
 
     $form['secure_code'] = array(
-      '#type'      => 'textfield',
-      '#title'     => t('Secure code'),
-      '#weight'    => 2,
-      '#size'      => 4,
+      '#type' => 'textfield',
+      '#title' => t('Secure code'),
+      '#weight' => 2,
+      '#size' => 4,
       '#maxlength' => 4,
     );
 
     $form['expiry_date'] = array(
-      '#type'   => 'fieldset',
-      '#title'  => t('Expiry date'),
+      '#type' => 'fieldset',
+      '#title' => t('Expiry date'),
       '#weight' => 3,
-      '#tree'   => TRUE,
+      '#tree' => TRUE,
       '#attributes' => array('class' => array('expiry-date')),
     );
 
@@ -141,4 +141,5 @@ class CreditCardForm implements PaymentFormInterface {
       $payment->method_data[$key] = $values[$key];
     }
   }
+
 }
