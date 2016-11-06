@@ -1,5 +1,5 @@
 name = Payment Form
-description = Form handling for payment methods
+description = Makes building payment forms simpler by providing a nice interface and good default forms.
 core = 7.x
 project = payment_forms
 php = 5.6
