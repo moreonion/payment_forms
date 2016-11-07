@@ -28,6 +28,21 @@ function payment_forms_payment_form_validate(&$element, &$form_state) {
 }
 
 /**
+ * Helper functions that recursively merges $defaults into a $config array.
+ */
+function _payment_forms_merge_array_defaults(&$config, $defaults) {
+  $config += $defaults;
+  foreach ($config as $key => $value) {
+    if (is_array($value) && isset($defaults[$key]) && is_array($defaults[$key])) {
+      $is_assoc = empty($value) || array_keys($value) !== range(0, count($value) - 1);
+      if ($is_assoc) {
+        _payment_forms_merge_array_defaults($config[$key], $defaults[$key]);
+      }
+    }
+  }
+}
+
+/**
  * Form element callback: Payment method configuration.
  *
  * The callback to this function has to be set in the payment controller class.
@@ -36,7 +51,7 @@ function payment_forms_payment_form_validate(&$element, &$form_state) {
  */
 function payment_forms_method_configuration_form($element, &$form_state) {
   $method = $form_state['payment_method'];
-  $method->controller_data = drupal_array_merge_deep($method->controller->controller_data_defaults, $method->controller_data);
+  _payment_forms_merge_array_defaults($method->controller_data, $method->controller->controller_data_defaults);
   $form = $method->controller->configurationForm($method);
   $element = $form->form($element, $form_state, $method);
   $element['#form'] = $form;
