@@ -9,11 +9,11 @@ interface MethodFormInterface {
   /**
    * Add form elements to the $element Form-API array.
    */
-  public function form(array &$element, array &$form_state, \PaymentMethod $method);
+  public function form(array $element, array &$form_state, \PaymentMethod $method);
 
   /**
    * Validate the submitted values.
    */
-  public function validate(array &$element, array &$form_state, \PaymentMethod $method);
+  public function validate(array $element, array &$form_state, \PaymentMethod $method);
 
 }
