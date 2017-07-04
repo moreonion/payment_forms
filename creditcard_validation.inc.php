@@ -117,6 +117,8 @@ class CreditCardValidator {
     switch ($issuer) {
       case 'visa':
       case 'mastercard':
+      case 'discover':
+      case 'diners':
         if (preg_match('/^\d{3}$/', $cvc2_code) == 1) {
           return TRUE;
         }
