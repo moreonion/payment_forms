@@ -98,15 +98,9 @@ class CreditCardValidator {
     switch ($issuer) {
       case 'visa':
       case 'mastercard':
-
-        if (   preg_match('/^[a-z0-9]{8,16}$/i', $sec_code) == 1
-            && preg_match('/^.*[0-9]+.*$/',  substr($sec_code, 0, 8)) == 1
-            && preg_match('/^.*[a-z]+.*$/i', substr($sec_code, 0, 8)) == 1) {
-          return TRUE;
-        }
-        else {
-          return FALSE;
-        }
+        return  preg_match('/^[a-z0-9]{8,16}$/i', $sec_code) &&
+            preg_match('/^.*[0-9]+.*$/',  substr($sec_code, 0, 8)) &&
+            preg_match('/^.*[a-z]+.*$/i', substr($sec_code, 0, 8));
 
       default:
         return TRUE;
@@ -119,22 +113,10 @@ class CreditCardValidator {
       case 'mastercard':
       case 'discover':
       case 'diners':
-        if (preg_match('/^\d{3}$/', $cvc2_code) == 1) {
-          return TRUE;
-        }
-        else {
-          return FALSE;
-        }
-        break;
+        return (bool) preg_match('/^\d{3}$/', $cvc2_code);
 
       case 'amex':
-        if (preg_match('/^\d{4}$/', $cvc2_code) == 1) {
-          return TRUE;
-        }
-        else {
-          return FALSE;
-        }
-        break;
+        return (bool) preg_match('/^\d{4}$/', $cvc2_code);
 
       default:
         return FALSE;
