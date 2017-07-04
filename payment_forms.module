@@ -12,6 +12,7 @@ function payment_forms_payment_form(array &$element, array &$form_state) {
   $form = $payment->method->controller->paymentForm($payment);
   $element = $form->form($element, $form_state, $payment);
   $element['#form'] = $form;
+  drupal_alter('payment_forms_payment_form', $element, $payment);
   return $element;
 }
 

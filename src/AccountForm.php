@@ -10,6 +10,7 @@ class AccountForm implements PaymentFormInterface {
     $form['holder'] = array(
       '#type'  => 'textfield',
       '#title' => t('Account holder'),
+      '#soft_required' => TRUE,
     );
 
     include_once DRUPAL_ROOT . '/includes/locale.inc';
@@ -46,7 +47,7 @@ class AccountForm implements PaymentFormInterface {
 
     $method_data['holder'] = $values['holder'];
 
-    if (empty($values['holder']) == TRUE) {
+    if ($element['holder']['#soft_required'] && empty($values['holder'])) {
       form_error($element['holder'], t('Please enter the name of the account holder.'));
     }
 
