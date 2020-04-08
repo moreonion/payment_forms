@@ -10,7 +10,7 @@ class OnlineBankingForm implements PaymentFormInterface {
   public function form(array $form, array &$form_state, \Payment $payment) {
     $form['redirection_info'] = array(
       '#type' => 'markup',
-      '#markup' => t('After submitting this form you will be redirected to our external payment partner to finish the transaction.'),
+      '#markup' => '<p class="payement-redirect-info">' . t('After submitting this form you will be redirected to our external payment partner to finish the transaction.') . '</p>',
       '#weight' => 0,
     );
 
