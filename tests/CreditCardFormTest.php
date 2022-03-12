@@ -16,8 +16,10 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
   );
 
   protected function getValidateMock() {
-    $mock = $this->getMock('\Drupal\payment_forms\CreditCardForm', array('formError'));
-    return $mock;
+    return $this->getMockBuilder(CreditCardForm::class)
+       ->disableOriginalConstructor()
+       ->setMethods(['formError'])
+       ->getMock();
   }
 
   protected function elements() {
