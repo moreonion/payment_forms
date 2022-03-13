@@ -9,7 +9,7 @@ use Drupal\little_helpers\ArrayConfig;
  * assumes that a PaymentMethodController using this callback implements the
  * paymentForm() method according to @see FormCallbacksMixin.
  */
-function payment_forms_payment_form(array &$element, array &$form_state) {
+function payment_forms_payment_form(array $element, array &$form_state) {
   $payment = $form_state['payment'];
   $form = $payment->method->controller->paymentForm($payment);
   $element = $form->form($element, $form_state, $payment);
@@ -24,7 +24,7 @@ function payment_forms_payment_form(array &$element, array &$form_state) {
  * The function name is automatically derived from the
  * form callback name.
  */
-function payment_forms_payment_form_validate(&$element, &$form_state) {
+function payment_forms_payment_form_validate($element, &$form_state) {
   $payment = $form_state['payment'];
   $form = $element['#form'];
   $form->validate($element, $form_state, $payment);
