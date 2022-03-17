@@ -10,14 +10,16 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
       'secure_code' => '804',
       'expiry_date' => array(
         'month' => '06',
-        'year' => '2016',
+        'year' => '2080',
       ),
     )
   );
 
   protected function getValidateMock() {
-    $mock = $this->getMock('\Drupal\payment_forms\CreditCardForm', array('formError'));
-    return $mock;
+    return $this->getMockBuilder(CreditCardForm::class)
+       ->disableOriginalConstructor()
+       ->setMethods(['formError'])
+       ->getMock();
   }
 
   protected function elements() {
@@ -35,7 +37,7 @@ class CreditCardFormTest extends \DrupalUnitTestCase {
     $elements = $this->elements();
     $form->validateValues($elements, $data);
     $this->assertInstanceOf('DateTime', $data['expiry_date']);
-    $this->assertEqual('2016-06', $data['expiry_date']->format('Y-m'));
+    $this->assertEqual('2080-06', $data['expiry_date']->format('Y-m'));
   }
 
   function testValidation_validVisaWithWhitespace() {
